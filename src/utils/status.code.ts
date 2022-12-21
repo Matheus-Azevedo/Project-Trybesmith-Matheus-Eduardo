@@ -22,8 +22,6 @@ const statusCode: Status = {
   DELETED: 204,
 };
 
-function findStatus(status: keyof Status): number {
+export default function findStatus(status: keyof Status): number {
   return statusCode[status];
 }
-
-export default findStatus;
