@@ -1,14 +1,24 @@
+import { RowDataPacket } from 'mysql2';
 import connection from './connection';
 
-export async function insertOrder(userId: number, productId: number) {
+async function insertOrder(userId: number, productId: number) {
   const query = `INSERT INTO Trybesmith.orders
   (user_id, product_id) VALUES (?, ?)`;
   const result = await connection.execute(query, [userId, productId]);
   return result;
 }
 
-export async function selectAllOrders() {
-  const query = 'SELECT * FROM Trybesmith.orders';
-  const result = await connection.execute(query);
-  return result;
+async function selectAllOrders() {
+  const query = `
+  SELECT O.id, O.user_id as userId, JSON_ARRAYAGG(PR.id) AS productsIds 
+  FROM Trybesmith.orders AS O
+  INNER JOIN Trybesmith.products AS PR ON O.id = PR.order_id
+  GROUP BY O.id`;
+  const [result] = await connection.execute(query);
+  return result as RowDataPacket;
 }
+
+export default {
+  insertOrder,
+  selectAllOrders,
+};
