@@ -4,7 +4,7 @@ import code from '../utils/status.code';
 async function nameValidation(req: Request, res: Response, next: NextFunction) {
   const { name } = req.body;
   if (!name) {
-    return res.status(code.BAD_REQUEST).json({ message: '"name is" required' });
+    return res.status(code.BAD_REQUEST).json({ message: '"name" is required' });
   }
   if (typeof name !== 'string') {
     return res.status(code.UNPROCESSABLE_ENTITY).json({ message: '"name" must be a string' });
