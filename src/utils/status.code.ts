@@ -8,6 +8,7 @@ interface Status {
   NOT_FOUND: number;
   FORBIDDEN: number;
   DELETED: number;
+  UNPROCESSABLE_ENTITY: number;
 }
 
 const statusCode: Status = {
@@ -20,8 +21,7 @@ const statusCode: Status = {
   NOT_FOUND: 404,
   FORBIDDEN: 403,
   DELETED: 204,
+  UNPROCESSABLE_ENTITY: 422,
 };
 
-export default function findStatus(status: keyof Status): number {
-  return statusCode[status];
-}
+export default statusCode;
