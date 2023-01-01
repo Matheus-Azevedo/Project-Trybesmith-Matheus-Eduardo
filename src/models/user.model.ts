@@ -8,6 +8,13 @@ async function insertUser(username: string, vocation: string, level: number, pas
   return result as RowDataPacket;
 }
 
+async function selectUser(username: string) {
+  const query = 'SELECT * FROM Trybesmith.users WHERE username = ?';
+  const [result] = await connection.execute(query, [username]);
+  return result as RowDataPacket;
+}
+
 export default {
   insertUser,
+  selectUser,
 };

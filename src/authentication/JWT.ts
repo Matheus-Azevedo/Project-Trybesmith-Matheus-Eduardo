@@ -1,5 +1,6 @@
-// import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import status from '../utils/status.code';
 
 require('dotenv/config');
 
@@ -19,31 +20,31 @@ function createToken(userData: string) {
 function verifyToken(authorization: string) {
   try {
     const payLoad = jwt.verify(authorization, secret);
-    return payLoad;
+    return { payLoad };
   } catch (error: unknown) {
     return { isError: true, message: error };
   }
 }
 
-// const validateToken = async (req: Request, res: Response, next: any) => {
-//   const { authorization } = req.headers;
-//   if (!authorization) {
-//     return res
-//       .status(401)
-//       .json({ message: 'Token not found' });
-//   }
-//   const payLoad = await verifyToken(authorization);
-//   if (payLoad.isError) {
-//     return res
-//       .status(401)
-//       .json({ message: 'Expired or invalid token' });
-//   }
-//   req.user = payLoad.data;
-//   next();
-// };
+async function validateToken(req: Request, res: Response, next: NextFunction) {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    return res
+      .status(status.UNAUTHORIZED)
+      .json({ message: 'Token not found' });
+  }
+  const { isError, payLoad } = verifyToken(authorization);
+  if (isError) {
+    return res
+      .status(status.UNAUTHORIZED)
+      .json({ message: 'Invalid token' });
+  }
+  req.headers.user = (payLoad as JwtPayload).data;
+  next();
+}
 
 export default {
   createToken,
   verifyToken,
-  // validateToken,
+  validateToken,
 };

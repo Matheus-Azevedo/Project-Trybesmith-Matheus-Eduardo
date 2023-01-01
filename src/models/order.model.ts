@@ -1,11 +1,11 @@
 import { RowDataPacket } from 'mysql2';
 import connection from './connection';
 
-async function insertOrder(userId: number, productId: number) {
+async function insertOrder(userId: number) {
   const query = `INSERT INTO Trybesmith.orders
-  (user_id, product_id) VALUES (?, ?)`;
-  const result = await connection.execute(query, [userId, productId]);
-  return result;
+  (user_id) VALUES (?)`;
+  const result = await connection.execute(query, [userId]);
+  return result[0] as RowDataPacket;
 }
 
 async function selectAllOrders() {
